@@ -1,4 +1,4 @@
 # sneshawks
 
-I briefly tinkered with a Super Nintendo project (developing in OSX),
-but I haven't gotten any further than color cycling just yet.
+A small Super Nintendo program that initializes the machine and resorts to color cycling ;)  
+Compiles with WLA DX for OSX (included); I used the BSNES emulator.

@@ -1,16 +1,4 @@
 
-; MEGAHAWKS INC. - HOT STUFF 2
-; a Super Famicom demonstration
-
-; currently built with Make on OSX
-; also: use Sublime Text 2 :)
-; it assumes BSNES (accurate version) is installed
-
-; to do:
-; - expand/revise startup procedure
-; - draw something :)
-; - debugger + Windows dev. support
-
 .INCLUDE "header.inc"
 .INCLUDE "startup.asm"
 

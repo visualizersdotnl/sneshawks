@@ -8,12 +8,11 @@
 ;
 
 .MEMORYMAP
-	; each bank has a *single* 32KB ROM slot (so slots are irrelevant to us)
+	; in 'lorom' mode, each bank has a single 32KB ROM slot
 	SLOTSIZE $8000
 	DEFAULTSLOT 0
 
-	; in "lorom" mode, that slot is mapped to the upper 32KB of the bank
-	; the lower 32KB is mapped to useful resources (first 8KB of system RAM, ports et cetera)
+	; ROM is mapped to the upper 32KB of a bank
 	SLOT 0 $8000
 .ENDME
 

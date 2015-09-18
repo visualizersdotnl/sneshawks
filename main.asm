@@ -45,7 +45,7 @@ Int_NMI:
 
 	rti
 
-; some place in this bank..
-.EQU cycle $0200
+; first byte in lower system RAM
+.EQU cycle $0000
 
 .ENDS

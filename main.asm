@@ -1,52 +1,51 @@
 
+; to do:
+; - constants for important (address) values (system.inc)
+; - everything
+
 .INCLUDE "header.inc"
-.INCLUDE "startup.asm"
+.INCLUDE "system.inc"
 
 .BANK 0
 .ORG $0
-.SECTION "code" SEMIFREE
+.SECTION "Main" SEMIFREE
 
 Main:
-	Boot
+	; minimal boot (shuts off display)
+	OnBoot
 
-	; initialize variable(s)
 	lda #$1f
-	sta bCycleR
+	sta cycle
 
-	; set display mode #6 w/small tiles
-	lda #%00000110
+	; set mode 7 w/small tiles
+	lda #$7
 	sta $2105
 
+	; fire up display & VBLANK
 	jsr StartDisplay
 
-mainLoop:
+@infinity:
 	wai
-	jmp mainLoop
+	jmp @infinity
 
-Interrupt_NMI:
-	; cycle R
-	lda bCycleR
+Int_NMI:
+	; cycle
+	lda cycle
 	ina
-;	and #$1f
-	sta bCycleR
+	sta cycle
 
-	; set color #0
+	; set as background color
 	stz $2121
-;	lda bCycleR
+;	lda cycle
 	sta $2122
 	stz $2122
 
-	; read clears NMI occured flag
+	; we're done, clear NMI flag
 	lda $4210
 
 	rti
 
-.ENDS
-
-.BANK 2
-.ORG $0
-.SECTION "variables" SEMIFREE
-
-.EQU bCycleR $0000
+; some place in this bank..
+.EQU cycle $0200
 
 .ENDS

@@ -1,54 +1,71 @@
 
+;
+; header.inc -- Memory model, platform (cartridge) header, default interrupt vectors.
+;
+; Dependencies:
+; - Address label 'Main' for entry point.
+; - Address label 'Int_NMI' for default VBLANK interrupt.
+;
+
 .MEMORYMAP
-	; single 32KB slot @ 0x8000-0xffff
+	; each bank has a *single* 32KB ROM slot (so slots are irrelevant to us)
 	SLOTSIZE $8000
-	SLOT 0 $8000
 	DEFAULTSLOT 0
+
+	; in "lorom" mode, that slot is mapped to the upper 32KB of the bank
+	; the lower 32KB is mapped to useful resources (first 8KB of system RAM, ports et cetera)
+	SLOT 0 $8000
 .ENDME
 
-.ROMBANKSIZE $8000 ; 32KB banks
-.ROMBANKS    $08   ; 2MBit cartridge
+; 32KB ROM banks
+.ROMBANKSIZE $8000 
+
+; 256KB cartridge
+.ROMBANKS $08   
 
 .SNESHEADER
-	ID "SNES" ; 1-4 char. string.
+	; max. 4 characters
+	ID "SNES"
 
 	; title name (max. 21 characters)
-	NAME "Megahawks INC.       "
+	NAME ""
 
-	LOROM    ; lower banks
-	SLOWROM  ; 200ns ROM
+	; ROM is low & slow (200ns)
+	LOROM
+	SLOWROM
 
-	CARTRIDGETYPE $00 ; ROM only
+	CARTRIDGETYPE $01 ; this cartridge consists of ROM and RAM
 	ROMSIZE $08       ; 8 banks
 	SRAMSIZE $00      ; no SRAM
 	COUNTRY $01       ; US (0 = Japan)
-	LICENSEECODE $00  ; unlicensed
-	VERSION $00
+	LICENSEECODE $00  ; unlicensed?
+	VERSION $00       ; 1.x
 .ENDSNES
 
-; native interrupt vectors
+; native 65816 mode interrupt vectors
 .SNESNATIVEVECTOR
-	COP   Interrupt_NULL
-	BRK   Interrupt_NULL
-	ABORT Interrupt_NULL
-	NMI   Interrupt_NMI
-	IRQ   Interrupt_NULL
+	COP   Int_NOP
+	BRK   Int_NOP
+	ABORT Int_NOP
+	NMI   Int_NMI
+	IRQ   Int_NOP
 .ENDNATIVEVECTOR
 
-; emulation mode interrupt vectors
+; 6502 emulation mode interrupt vectors
 .SNESEMUVECTOR
-	COP    Interrupt_NULL
-	ABORT  Interrupt_NULL
-	NMI    Interrupt_NULL
+	COP    Int_NOP
+	ABORT  Int_NOP
+	NMI    Int_NOP
 	RESET  Main
-	IRQBRK Interrupt_NULL
+	IRQBRK Int_NOP
 .ENDEMUVECTOR
 
+; stuff default interrupt handler in bank #0
 .BANK 0
 .ORG $0
-.SECTION "Interrupt_NULL" SEMIFREE
+.SECTION "Interupt" SEMIFREE
 
-Interrupt_NULL:
+Int_NOP:
 	rti
 
 .ENDS

@@ -1,4 +1,8 @@
 
+;
+; system.inc -- Startup routines, 65816 register macros.
+;
+
 .MACRO _XY16_A16
 	rep #%00110000 ; 0x30
 .ENDM
@@ -47,6 +51,7 @@ Boot:
 	sta $2100
 
 	; set normal ROM access speed (200ns, would otherwise be 120ns -- see header.inc)
+	; decide by peeking at the mode value in ROM! (FIXME)
 	stz $420d
 
 	;

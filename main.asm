@@ -2,7 +2,7 @@
 ; to do:
 ; - steal bits of knowledge from nevitski's kit
 ;   + memory/register constants
-;   + figure out fast ROM?
+;   + figure out fast ROM
 ;   + on boot initialization of registers & memory
 ; - figure out if it's going to be metaprogramming or a C compiler
 ; - draw a f*cking sprite already!

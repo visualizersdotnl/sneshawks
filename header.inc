@@ -26,8 +26,8 @@
 	; max. 4 characters
 	ID "SNES"
 
-	; title name (max. 21 characters)
-	NAME ""
+	; title name (21 characters)
+	NAME "TEST                 "
 
 	; ROM is low & slow (200ns)
 	LOROM
@@ -38,7 +38,7 @@
 	SRAMSIZE $00      ; no SRAM
 	COUNTRY $01       ; US (0 = Japan)
 	LICENSEECODE $00  ; unlicensed?
-	VERSION $00       ; 1.x
+	VERSION $00       ; $00 = 1.00, $01 = 1.01 et cetera
 .ENDSNES
 
 ; native 65816 mode interrupt vectors

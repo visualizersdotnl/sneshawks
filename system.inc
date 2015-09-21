@@ -1,4 +1,12 @@
 
+.MACRO _XY16_A16
+	rep #%00110000 ; 0x30
+.ENDM
+
+.MACRO _XY16_A8
+	sep #%00100000 ; 0x20
+.ENDM
+
 .MACRO OnBoot
 	; disable interrupts
 	sei            
@@ -7,14 +15,15 @@
 	clc            
 	xce
 
-	; select 16-bit registers
-	rep #$18
+	; A16, XY16, decimal mode off
+	rep #$38
 
 	; set stack pointer
-	; we're using the first 8KB of system RAM (bank #0)
+	; we're using the first 8KB of system RAM (mapped to bank)
 	ldx #$1fff
 	txs
 
+	; now that the stack's been set up: jump!
 	jsr Boot
 .ENDM
 
@@ -23,7 +32,7 @@
 .SECTION "System" SEMIFREE
 
 Boot:
-	; data bank = program bank = 0
+	; data bank = program bank
 	phk
 	plb
 
@@ -31,19 +40,18 @@ Boot:
 	lda #$0
 	tcd
 
-	; pick 8-bit accumulator/memory
-	sep #%00100000
+	_XY16_A8
 
 	; disable display
 	lda #$80
 	sta $2100
 
-	; set normal ROM access speed (200ns, would otherwise be 120ns -- see header!)
+	; set normal ROM access speed (200ns, would otherwise be 120ns -- see header.inc)
 	stz $420d
 
 	;
-	; I've seen many examples clearing entire sets of registers and memory at this point
-	; this likely has to happen to run on the real SNES :)
+	; FIXME -- at this point I should clear entire sets of registers and memory
+	;          emulators generally don't need it, real hardware does
 	;
 
 	; enable interrupts
@@ -52,12 +60,13 @@ Boot:
 	rts
 
 StartDisplay:
-	; enable NMI (vertical blank interrupt)
-	; this disables position IRQs & joypad
+	; - enable NMI (vertical blank)
+	; - disables position IRQs & joypad
 	lda #$80
 	sta $4200
 
 	; enable display, full brightness
+	; can I just do this without any sync.? (FIXME)
 	lda #$0f
 	sta $2100
 
